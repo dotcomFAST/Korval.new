@@ -1,0 +1,969 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="meta.title">Korval — Financial infrastructure for modern money</title>
+  <meta name="description" data-i18n-attr="content:meta.desc" content="Send, hold and settle money at the speed of the internet — through one API. Concept, portfolio project.">
+  <meta name="theme-color" content="#EBEBEA">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23EBEBEA'/%3E%3Crect x='6' y='6' width='20' height='20' fill='%23E1251B'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&family=Outfit:wght@600;700&family=Roboto+Mono&display=swap">
+  <style>
+/* ==========================================================================
+   Korval — Editorial. Десктоп 1440 (масштаб через --u), мобайл < 760px
+   ========================================================================== */
+:root {
+  --bg: #EBEBEA;
+  --ink: #151515;
+  --red: #E1251B;
+  --rule: #8C8C8C;
+  --code-bg: #0A0A0A;
+  --code: #D9D6D1;
+  --ph: #D8D8D6;
+
+  --u: min(calc(100vw / 1440), 1px);
+  --m: calc(16 * var(--u));
+  --g: calc(16 * var(--u));
+  --fs: max(13px, calc(15 * var(--u)));
+
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ease: cubic-bezier(.65, 0, .35, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 600 var(--fs)/1.08 "Inter", "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: -.01em;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+body.no-scroll { overflow: hidden; }
+h1, h2, p, figure, blockquote, pre { margin: 0; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; letter-spacing: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: inherit; }
+img { display: block; }
+:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+[tabindex="-1"]:focus { outline: none; }
+.red { color: var(--red); }
+
+.skip { position: absolute; left: 12px; top: -48px; z-index: 100; background: var(--ink); color: var(--bg); padding: 10px 14px; transition: top .2s; }
+.skip:focus { top: 12px; }
+
+/* ---------- Сетка ---------- */
+.container { width: 100%; max-width: 1440px; margin-inline: auto; padding-inline: var(--m); }
+.grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); column-gap: var(--g); align-items: start; }
+.rule-top { border-top: 1px solid var(--rule); }
+.container.rule-top { border-top: 0; background: linear-gradient(var(--rule), var(--rule)) var(--m) 0 / calc(100% - 2 * var(--m)) 1px no-repeat; }
+
+.label { grid-column: 1 / 2; grid-row: 1; }
+.label::after { content: "  ↘"; white-space: pre; }
+
+.col { border-left: 1px solid var(--ink); padding: 0 0 calc(24 * var(--u)) max(5px, calc(6 * var(--u))); }
+.col .list { margin-top: calc(14 * var(--u)); }
+.list { line-height: 1; }
+.col-5 { grid-column: 5 / 6; }
+.col-6 { grid-column: 6 / 7; }
+.col-56 { grid-column: 5 / 7; grid-row: 1; line-height: 1; }
+
+/* ---------- Ссылки ---------- */
+.u-link { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .45s var(--ease-out); }
+.u-link:hover { background-size: 100% 1px; }
+.link {
+  display: inline-block; white-space: pre-wrap; max-width: 100%; padding-bottom: 3px;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  transition: background-size .5s var(--ease-out), color .3s;
+}
+.link:hover { background-size: 0 1px; color: var(--red); }
+
+/* ---------- Фото ---------- */
+.photo { position: relative; overflow: hidden; background: var(--ph); }
+.photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease-out), opacity .4s; }
+.photo:hover img { transform: scale(1.025); }
+.photo img.is-missing { opacity: 0; }
+
+/* ==========================================================================
+   01 HERO
+   ========================================================================== */
+.hero { padding: calc(18 * var(--u)) 0 calc(72 * var(--u)); }
+.top { font-size: 11px; line-height: 1.15; letter-spacing: 0; }
+.t-logo { grid-column: 1 / 2; justify-self: start; }
+.t-tag { grid-column: 2 / 3; }
+.t-nav, .t-social { display: flex; flex-direction: column; align-items: flex-start; }
+.t-nav { grid-column: 4 / 5; }
+.t-social { grid-column: 5 / 6; }
+.t-right { grid-column: 6 / 7; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.t-loc { text-align: right; }
+
+.lang { display: inline-flex; gap: 4px; align-items: baseline; }
+.lang button { opacity: .4; transition: opacity .25s; }
+.lang button:hover { opacity: .8; }
+.lang button[aria-pressed="true"] { opacity: 1; text-decoration: underline; text-underline-offset: 3px; }
+
+.wordmark {
+  position: relative;
+  margin: calc(102 * var(--u) - 25px) 0 0 calc(-21 * var(--u));
+  font: 700 calc(388 * var(--u))/.8 "Outfit", "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: -.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.wordmark { pointer-events: none; }
+.top { position: relative; z-index: 2; }
+.wm-text { display: inline-block; }
+.wm-reg {
+  position: absolute; right: calc(9 * var(--u)); top: calc(19 * var(--u));
+  font: 600 calc(40 * var(--u))/1 "Outfit", sans-serif; letter-spacing: 0;
+}
+
+.hero-photo { margin-top: calc(77 * var(--u)); aspect-ratio: 1408 / 640; }
+.play {
+  position: absolute; left: calc(1154 * var(--u)); bottom: calc(40 * var(--u));
+  display: flex; align-items: center; gap: calc(16 * var(--u));
+}
+.play-btn {
+  width: max(44px, calc(64 * var(--u))); aspect-ratio: 1; border-radius: 50%;
+  background: var(--ink); color: #fff;
+  display: grid; place-items: center; padding-left: 3px;
+  transition: transform .5s var(--ease-out), background .3s;
+}
+.play:hover .play-btn { transform: scale(1.1); background: var(--red); }
+.play-txt { display: flex; flex-direction: column; font-size: max(15px, calc(20 * var(--u))); letter-spacing: -.02em; line-height: 1.08; }
+.play-txt small { margin-top: 4px; font: 500 10px/1.08 "Inter", sans-serif; letter-spacing: 0; }
+
+/* ==========================================================================
+   02 ABOUT
+   ========================================================================== */
+.about { padding-bottom: calc(56 * var(--u)); }
+.about .grid { row-gap: calc(64 * var(--u)); }
+.about-text { grid-column: 2 / 4; grid-row: 1; max-width: calc(439 * var(--u)); min-width: 260px; line-height: 1; }
+.team-photo { grid-column: 1 / 4; grid-row: 2; width: calc(684 * var(--u)); height: calc(560 * var(--u)); }
+.about .col-5, .about .col-6 { grid-row: 2; }
+
+/* ==========================================================================
+   03 SPEED
+   ========================================================================== */
+.speed .container { position: relative; height: calc(1066 * var(--u)); overflow: hidden; }
+.speed-head { padding-top: calc(40 * var(--u)); position: relative; z-index: 2; }
+.speed-head .col-56 { max-width: calc(453 * var(--u) + 6px); }
+.speed-art .photo, .big, .big-unit, .cut { position: absolute; }
+.coins-photo { left: calc(16 * var(--u)); top: calc(159 * var(--u)); width: calc(340 * var(--u)); height: calc(274 * var(--u)); }
+.big {
+  left: calc(-17 * var(--u)); top: calc(293 * var(--u));
+  font: 700 calc(813 * var(--u))/1 "Outfit", sans-serif; letter-spacing: -.04em;
+  color: var(--red); white-space: nowrap;
+  will-change: transform;
+}
+.big-unit {
+  left: calc(1300 * var(--u)); top: calc(423 * var(--u)); width: calc(124 * var(--u));
+  text-align: right; color: var(--red);
+  font: 600 calc(56 * var(--u))/1 "Outfit", sans-serif; letter-spacing: -.02em;
+}
+.collar-photo { left: calc(965 * var(--u)); top: calc(374 * var(--u)); width: calc(221 * var(--u)); height: calc(300 * var(--u)); z-index: 1; }
+.cut { left: calc(16 * var(--u)); top: calc(1065 * var(--u)); width: calc(1408 * var(--u)); height: 1px; background: var(--ink); }
+
+/* ==========================================================================
+   04 DEVELOPERS
+   ========================================================================== */
+.dev { padding: calc(48 * var(--u)) 0 calc(96 * var(--u)); }
+.dev-text { grid-column: 2 / 4; grid-row: 1; max-width: calc(439 * var(--u)); min-width: 260px; line-height: 1; }
+.dev-text .link { margin-top: 20px; line-height: 1.08; }
+.code {
+  grid-column: 4 / 7; grid-row: 1;
+  background: var(--code-bg); color: var(--code);
+  padding: calc(32 * var(--u));
+  font: 400 max(12px, calc(15 * var(--u)))/1.7 "Roboto Mono", ui-monospace, Menlo, monospace;
+  letter-spacing: 0; white-space: pre; overflow-x: auto;
+}
+.tok { color: var(--red); }
+
+/* ==========================================================================
+   05 PRICING
+   ========================================================================== */
+.pricing .grid { padding-block: calc(40 * var(--u)) calc(96 * var(--u)); }
+.price-note { grid-column: 2 / 4; grid-row: 1; line-height: 1; }
+.plan { grid-row: 1; padding-bottom: calc(22 * var(--u)); }
+.plan:nth-of-type(1) { grid-column: 4 / 5; }
+.plan:nth-of-type(2) { grid-column: 5 / 6; }
+.plan:nth-of-type(3) { grid-column: 6 / 7; }
+.price {
+  margin: calc(20 * var(--u)) 0 calc(6 * var(--u));
+  font: 700 max(34px, calc(56 * var(--u)))/.9 "Outfit", sans-serif; letter-spacing: -.04em;
+}
+.plan .feats { margin-top: calc(24 * var(--u)); }
+.plan .link { margin-top: calc(28 * var(--u)); }
+
+/* ==========================================================================
+   06 SECURITY
+   ========================================================================== */
+.security .grid { padding-block: calc(40 * var(--u)) calc(120 * var(--u)); }
+.sec-text { grid-column: 2 / 4; grid-row: 1; max-width: calc(439 * var(--u)); min-width: 260px; line-height: 1; }
+.security .col { grid-row: 1; }
+
+/* ==========================================================================
+   07 TESTIMONIAL
+   ========================================================================== */
+.quote .grid { padding-block: calc(36 * var(--u)) calc(120 * var(--u)); }
+.quote .label { margin-top: calc(4 * var(--u)); }
+.quote blockquote {
+  grid-column: 2 / 6; grid-row: 1;
+  font-size: max(26px, calc(48 * var(--u))); line-height: 1; letter-spacing: -.035em;
+}
+.quote figcaption { grid-column: 2 / 6; grid-row: 2; margin-top: calc(32 * var(--u)); line-height: 1; }
+
+/* ==========================================================================
+   08 CONTACT
+   ========================================================================== */
+.contact .grid { padding-block: calc(40 * var(--u)) calc(120 * var(--u)); }
+.cta-word {
+  grid-column: 1 / -1; grid-row: 2;
+  margin: calc(40 * var(--u)) 0 0 calc(-7 * var(--u));
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.cta-txt {
+  font: 700 calc(215 * var(--u))/.85 "Outfit", sans-serif; letter-spacing: -.04em;
+  white-space: nowrap;
+  transition: color .4s;
+}
+:lang(pl) .cta-txt { font-size: calc(225 * var(--u)); }
+.cta-arr {
+  margin-top: calc(22 * var(--u));
+  font: 600 calc(108 * var(--u))/1 "Outfit", sans-serif; color: var(--red);
+  transition: transform .6s var(--ease-out);
+}
+.cta-word:hover .cta-txt { color: var(--red); }
+.cta-word:hover .cta-arr { transform: translate(calc(-12 * var(--u)), calc(12 * var(--u))); }
+.mail { grid-column: 1 / -1; grid-row: 3; justify-self: start; margin-top: calc(40 * var(--u)); }
+
+/* ==========================================================================
+   09 FOOTER
+   ========================================================================== */
+.footer .grid { padding-block: calc(40 * var(--u)) calc(56 * var(--u)); }
+.f-logo {
+  grid-column: 1 / 4; grid-row: 1;
+  font: 700 max(32px, calc(48 * var(--u)))/.9 "Outfit", sans-serif; letter-spacing: -.04em; text-transform: uppercase;
+}
+.f-logo span { font-size: .83em; font-weight: 600; letter-spacing: 0; vertical-align: top; margin-left: .1em; }
+.f-col { grid-row: 1; display: flex; flex-direction: column; align-items: flex-start; line-height: 1; }
+.f-col:nth-of-type(1) { grid-column: 4 / 5; }
+.f-col:nth-of-type(2) { grid-column: 5 / 6; }
+.f-col:nth-of-type(3) { grid-column: 6 / 7; }
+.f-copy { margin-top: 30px; }
+.f-concept { margin-top: 15px; }
+
+/* ==========================================================================
+   MODALS
+   ========================================================================== */
+.modal {
+  width: min(640px, calc(100vw - 24px)); max-width: none; max-height: calc(100dvh - 32px);
+  border: 0; padding: 0; background: var(--bg); color: var(--ink);
+  opacity: 0; transform: translateY(32px);
+  transition: opacity .35s var(--ease), transform .55s var(--ease-out);
+}
+.modal--video { width: min(1040px, calc(100vw - 24px)); }
+.modal.is-open { opacity: 1; transform: none; }
+.modal::backdrop { background: rgba(21, 21, 21, 0); transition: background .35s var(--ease); }
+.modal.is-open::backdrop { background: rgba(21, 21, 21, .75); }
+.modal-inner { padding: 0 24px 24px; }
+.modal-top { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--ink); margin-top: 20px; padding-top: 14px; }
+.modal-top .label { grid-column: auto; grid-row: auto; }
+.m-close:hover { color: var(--red); }
+.m-h { margin-top: 40px; font: 700 40px/.95 "Outfit", sans-serif; letter-spacing: -.04em; }
+.modal form { margin-top: 28px; }
+.field { padding-top: 14px; }
+.field label { display: block; font-size: 13px; font-weight: 500; opacity: .6; }
+.field input, .field select {
+  width: 100%; margin-top: 4px; padding: 10px 0;
+  border: 0; border-bottom: 1px solid var(--ink); border-radius: 0;
+  background: transparent; color: var(--ink);
+  font-family: inherit; font-size: 17px; font-weight: 600; letter-spacing: -.01em;
+  outline: none; -webkit-appearance: none; appearance: none;
+  transition: border-color .3s;
+}
+.field select {
+  cursor: pointer;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23151515' stroke-width='1.5'/%3E%3C/svg%3E") right 2px center no-repeat;
+}
+.field input:focus, .field select:focus { border-bottom: 2px solid var(--red); padding-bottom: 9px; }
+.field.has-error input { border-bottom-color: var(--red); }
+.err { min-height: 18px; padding-top: 4px; font-size: 12px; color: var(--red); }
+.submit {
+  margin-top: 20px; width: 100%;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 20px; background: var(--ink); color: var(--bg);
+  font-size: 17px; transition: background .3s;
+}
+.submit:hover { background: var(--red); }
+.m-note { margin-top: 12px; font-size: 12px; font-weight: 500; opacity: .6; }
+.m-sent { display: none; }
+.m-sent p { margin-top: 20px; max-width: 420px; font-size: 17px; line-height: 1.2; }
+.m-sent .link { margin-top: 32px; }
+.modal.is-sent .m-form { display: none; }
+.modal.is-sent .m-sent { display: block; }
+.v-screen { position: relative; margin-top: 20px; aspect-ratio: 16 / 9; background: var(--ph); overflow: hidden; }
+.v-screen img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) brightness(.85); }
+.v-foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; margin-top: 20px; }
+.v-foot p { max-width: 440px; line-height: 1; }
+
+/* ==========================================================================
+   Анимации
+   ========================================================================== */
+.wm-text { animation: rise 1.2s var(--ease-out) both; }
+.wm-reg { animation: fade 1s .5s both; }
+.hero-photo { animation: rise 1.2s .15s var(--ease-out) both; }
+@keyframes rise { from { opacity: 0; transform: translateY(40px); } }
+@keyframes fade { from { opacity: 0; } }
+
+.js [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity .9s var(--ease-out), transform .9s var(--ease-out); transition-delay: var(--d, 0ms); }
+.js [data-reveal].is-in { opacity: 1; transform: none; }
+
+[data-i18n] { transition: opacity .18s; }
+.is-switching [data-i18n] { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .js [data-reveal] { opacity: 1; transform: none; }
+}
+
+/* ==========================================================================
+   МОБАЙЛ < 760px
+   ========================================================================== */
+@media (max-width: 759px) {
+  :root { --m: 16px; --g: 12px; --fs: 15px; --cw: calc(100vw - 32px); }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid > * { grid-column: 1 / -1 !important; grid-row: auto !important; }
+  .label { margin-bottom: 16px; }
+  .col { padding: 0 0 20px 6px; }
+  .col .list { margin-top: 12px; }
+
+  /* top bar */
+  .hero { padding: 14px 0 48px; }
+  .top { grid-template-columns: 1fr auto auto; column-gap: 24px; }
+  .top > * { grid-column: auto !important; }
+  .t-tag, .t-social, .t-loc { display: none; }
+  .t-right { justify-content: flex-end; }
+  .wordmark { margin: 28px 0 0 -2px; font-size: calc(var(--cw) / 3.66); }
+  .wordmark .wm-reg { right: 0; }
+  .wm-reg { right: -4px; top: 4px; font-size: 12px; }
+  .hero-photo { margin-top: 20px; aspect-ratio: 4 / 3; }
+  .play { left: auto; right: 12px; bottom: 12px; gap: 10px; }
+  .play-txt small { display: none; }
+
+  /* about */
+  .about { padding-bottom: 48px; }
+  .about .grid { row-gap: 0; }
+  .about-text, .dev-text, .sec-text { max-width: none; min-width: 0; }
+  .team-photo { width: 100%; height: auto; aspect-ratio: 6 / 5; margin-top: 28px; }
+  .about .col-5, .security .col-5 { grid-column: 1 / 2 !important; margin-top: 24px; }
+  .about .col-6, .security .col-6 { grid-column: 2 / 3 !important; margin-top: 24px; }
+  .about .col-5, .about .col-6 { grid-row: 4 !important; }
+  .security .col-5, .security .col-6 { grid-row: 3 !important; }
+
+  /* speed */
+  .speed .container { height: auto; overflow: visible; }
+  .speed-head { padding-top: 24px; }
+  .speed-head .col-56 { max-width: none; }
+  .speed-art { position: relative; height: calc(var(--cw) * 1.02); margin-top: 24px; overflow: hidden; }
+  .coins-photo { left: 0; top: 0; width: 56%; height: auto; aspect-ratio: 340 / 274; }
+  .big { left: calc(var(--cw) * -.014); top: calc(var(--cw) * .39); font-size: calc(var(--cw) * .66); }
+  .big-unit { left: auto; right: 0; top: 0; width: auto; font-size: 22px; }
+  .collar-photo { left: auto; right: 0; top: calc(var(--cw) * .2); width: 26%; height: auto; aspect-ratio: 221 / 300; }
+  .cut { left: 0; top: auto; bottom: 0; width: 100%; }
+
+  /* dev */
+  .dev { padding: 40px 0 48px; }
+  .code { margin-top: 24px; padding: 16px; font-size: 12px; }
+
+  /* pricing */
+  .pricing .grid, .security .grid, .quote .grid, .contact .grid { padding-block: 24px 48px; }
+  .price-note { margin-bottom: 8px; }
+  .plan { margin-top: 24px; }
+  .price { font-size: 44px; margin: 16px 0 6px; }
+  .plan .feats { margin-top: 18px; }
+  .plan .link { margin-top: 20px; }
+
+  /* quote */
+  .quote blockquote { font-size: 26px; }
+  .quote figcaption { margin-top: 24px; }
+
+  /* contact */
+  .cta-word { margin: 32px 0 0 -2px; }
+  .cta-txt { font-size: calc(var(--cw) * .155); }
+  :lang(pl) .cta-txt { font-size: calc(var(--cw) * .163); }
+  .cta-arr { margin-top: 2px; font-size: calc(var(--cw) * .08); }
+  .mail { margin-top: 28px; }
+
+  /* footer */
+  .footer .grid { padding-block: 24px 40px; row-gap: 28px; }
+  .f-logo { grid-column: 1 / -1 !important; }
+  .f-col:nth-of-type(1) { grid-column: 1 / 2 !important; grid-row: 2 !important; }
+  .f-col:nth-of-type(2) { grid-column: 2 / 3 !important; grid-row: 2 !important; }
+  .f-col:nth-of-type(3) { grid-column: 1 / -1 !important; grid-row: 3 !important; }
+
+  .modal-inner { padding: 0 16px 20px; }
+  .m-h { font-size: 32px; margin-top: 28px; }
+}
+
+  </style>
+</head>
+<body>
+  <a class="skip" href="#about" data-i18n="skip">Skip to content</a>
+
+  <!-- 01 HERO -->
+  <header class="hero" id="top">
+    <div class="container">
+      <div class="top grid">
+        <a class="t-logo" href="#top">korval®</a>
+        <p class="t-tag" data-i18n="tag">financial<br>infrastructure</p>
+        <nav class="t-nav" aria-label="Main">
+          <a class="u-link" href="#products" data-i18n="nav.products">products</a>
+          <a class="u-link" href="#pricing" data-i18n="nav.pricing">pricing</a>
+        </nav>
+        <nav class="t-social" aria-label="Social">
+          <a class="u-link" href="#" data-placeholder>x</a>
+          <a class="u-link" href="#" data-placeholder>discord</a>
+        </nav>
+        <div class="t-right">
+          <div class="lang" role="group" aria-label="Language">
+            <button type="button" data-lang="en" aria-pressed="true">en</button><span aria-hidden="true">/</span><button type="button" data-lang="pl" aria-pressed="false">pl</button>
+          </div>
+          <p class="t-loc" data-i18n="loc">warsaw, pl</p>
+        </div>
+      </div>
+
+      <h1 class="wordmark" aria-label="Korval">
+        <span class="wm-mask"><span class="wm-text">korval</span></span><span class="wm-reg" aria-hidden="true">®</span>
+      </h1>
+
+      <figure class="photo hero-photo">
+        <img src="hero.jpg" alt="" width="1584" height="672" fetchpriority="high" onerror="this.classList.add('is-missing')">
+        <button class="play" type="button" data-video>
+          <span class="play-btn" aria-hidden="true"><svg width="16" height="18" viewBox="0 0 16 18"><path d="M15 9L1 17V1z" fill="currentColor"/></svg></span>
+          <span class="play-txt"><span data-i18n="hero.watch">Watch demo</span><small>2026 — 02:14</small></span>
+        </button>
+      </figure>
+    </div>
+  </header>
+
+  <main>
+    <!-- 02 ABOUT -->
+    <section class="sec about" id="about">
+      <div class="container grid">
+        <p class="label" data-i18n="about.label">About</p>
+        <p class="about-text" data-reveal data-i18n="about.text">At Korval, we know money can't wait. That's why we build the financial infrastructure companies use to send, hold and settle money — no middlemen, no delays, no borders. One API instead of ten banks.</p>
+        <figure class="photo team-photo" data-reveal>
+          <img src="team.jpg" alt="" width="1152" height="928" loading="lazy" onerror="this.classList.add('is-missing')">
+        </figure>
+        <div class="col col-5" id="products" data-reveal>
+          <p data-i18n="prod.h">Products:</p>
+          <p class="list" data-i18n="prod.list">Payments<br>Multi-currency accounts<br>Settlements<br>REST API &amp; SDKs<br>Webhooks<br>Live reporting<br>Corporate cards</p>
+        </div>
+        <div class="col col-6" data-reveal style="--d:80ms">
+          <p data-i18n="num.h">Numbers:</p>
+          <p class="list" data-i18n="num.list">Settlement 0.4 s<br>Currencies 140+<br>Volume $580M / mo<br>Uptime 99.99%<br>KNF licensed</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 SPEED -->
+    <section class="sec speed" id="speed">
+      <div class="container">
+        <div class="grid speed-head rule-top">
+          <p class="label" data-i18n="speed.label">Speed 0.4 s</p>
+          <div class="col col-56" data-reveal>
+            <p data-i18n="speed.text">The average settlement time at Korval is 0.4 seconds. Integration takes three steps: connect your system via API or ready-made plugins, set currencies, limits and settlement rules in the dashboard, then grow without changing your infrastructure — from the first transaction to the millionth.</p>
+          </div>
+        </div>
+        <div class="speed-art" aria-hidden="true">
+          <figure class="photo coins-photo"><img src="coins.jpg" alt="" width="1152" height="928" loading="lazy" onerror="this.classList.add('is-missing')"></figure>
+          <p class="big" data-parallax><span data-i18n="speed.big">0.4</span></p>
+          <p class="big-unit" data-i18n="speed.unit">sec.</p>
+          <figure class="photo collar-photo"><img src="collar.jpg" alt="" width="928" height="1152" loading="lazy" onerror="this.classList.add('is-missing')"></figure>
+          <span class="cut"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 DEVELOPERS -->
+    <section class="sec dev" id="developers">
+      <div class="container grid">
+        <p class="label" data-i18n="dev.label">Developers</p>
+        <div class="dev-text" data-reveal>
+          <p data-i18n="dev.text">Built by developers, for developers. A REST API, SDKs for six languages and documentation you'll actually want to read.</p>
+          <a class="link" href="#" data-placeholder><span data-i18n="dev.link">Read the docs</span>  ↗</a>
+        </div>
+        <pre class="code" data-reveal style="--d:100ms"><code><span class="tok">POST</span> /v1/transfers
+
+{
+  "amount": 125000,
+  "currency": "<span data-i18n="code.cur">USD</span>",
+  "destination": "acc_8Fk2Lq",
+  "settle": "instant"
+}
+
+<span class="tok">→ 200</span>  settled in 0.38s</code></pre>
+      </div>
+    </section>
+
+    <!-- 05 PRICING -->
+    <section class="sec pricing" id="pricing">
+      <div class="container grid rule-top">
+        <p class="label" data-i18n="price.label">Pricing</p>
+        <p class="price-note" data-i18n="price.note">Prices exclude tax. No setup fees<br>and no long-term contracts.</p>
+        <article class="col plan" data-reveal>
+          <p>Start</p>
+          <p class="price" data-i18n="p1.price">$0</p>
+          <p data-i18n="p1.per">per month</p>
+          <p class="list feats" data-i18n="p1.list">Up to $15K / month<br>0.9% per transaction<br>1 multi-currency account<br>Email support</p>
+          <a class="link" href="#contact" data-demo data-plan="start"><span data-i18n="p1.cta">Start for free</span>  ↘</a>
+        </article>
+        <article class="col plan" data-reveal style="--d:80ms">
+          <p><span data-i18n="p2.name">Business</span>  <span class="red">●</span></p>
+          <p class="price" data-i18n="p2.price">$129</p>
+          <p data-i18n="p2.per">per month</p>
+          <p class="list feats" data-i18n="p2.list">Up to $500K / month<br>0.4% per transaction<br>Up to 10 accounts<br>Full API &amp; webhooks</p>
+          <a class="link" href="#contact" data-demo data-plan="business"><span data-i18n="p2.cta">Choose plan</span>  ↘</a>
+        </article>
+        <article class="col plan" data-reveal style="--d:160ms">
+          <p>Enterprise</p>
+          <p class="price" data-i18n="p3.price">Custom</p>
+          <p data-i18n="p3.per">pricing</p>
+          <p class="list feats" data-i18n="p3.list">Unlimited volume<br>Custom fees<br>Dedicated manager<br>99.99% SLA</p>
+          <a class="link" href="#contact" data-demo data-plan="enterprise"><span data-i18n="p3.cta">Talk to us</span>  ↘</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- 06 SECURITY -->
+    <section class="sec security" id="security">
+      <div class="container grid rule-top">
+        <p class="label" data-i18n="sec.label">Security</p>
+        <p class="sec-text" data-i18n="sec.text">Security without compromise. We operate under financial supervision and pass an independent audit every year.</p>
+        <div class="col col-5" data-reveal>
+          <p data-i18n="comp.h">Compliance:</p>
+          <p class="list" data-i18n="comp.list">KNF license<br>PSD2<br>GDPR<br>SOC 2 Type II</p>
+        </div>
+        <div class="col col-6" data-reveal style="--d:80ms">
+          <p data-i18n="prot.h">Protection:</p>
+          <p class="list" data-i18n="prot.list">End-to-end encryption<br>AES-256<br>Annual audit<br>24/7 monitoring</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 TESTIMONIAL -->
+    <section class="sec quote" id="testimonial">
+      <figure class="container grid rule-top">
+        <p class="label" data-i18n="quote.label">Testimonial</p>
+        <blockquote data-reveal data-i18n="quote.text">“We moved all our international settlements to Korval in two weeks. Today we can’t imagine going back.”</blockquote>
+        <figcaption>Anna Wiśniewska<br>CFO, Nordline Logistics</figcaption>
+      </figure>
+    </section>
+
+    <!-- 08 CONTACT -->
+    <section class="sec contact" id="contact">
+      <div class="container grid rule-top">
+        <p class="label" data-i18n="contact.label">Contact</p>
+        <div class="col col-56" data-reveal>
+          <p data-i18n="contact.text">Talk to our team and see Korval in action. We reply within one business day.</p>
+        </div>
+        <a class="cta-word" href="#contact" data-demo>
+          <span class="cta-txt" data-i18n="cta.word">book a demo</span><span class="cta-arr" aria-hidden="true">↘</span>
+        </a>
+        <a class="link mail" href="mailto:korval.io@gmail.com">korval.io@gmail.com</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- 09 FOOTER -->
+  <footer class="footer">
+    <div class="container grid rule-top">
+      <p class="f-logo">korval<span>®</span></p>
+      <div class="col f-col">
+        <a class="u-link" href="#products" data-i18n="f.products">Products</a>
+        <a class="u-link" href="#pricing" data-i18n="f.pricing">Pricing</a>
+        <a class="u-link" href="#contact" data-i18n="f.contact">Contact</a>
+        <span class="f-copy">©korval 2026</span>
+      </div>
+      <div class="col f-col">
+        <a class="u-link" href="#" data-placeholder>X</a>
+        <a class="u-link" href="#" data-placeholder>Discord</a>
+        <a class="u-link" href="#" data-placeholder>GitHub</a>
+        <a class="u-link" href="#" data-placeholder>LinkedIn</a>
+      </div>
+      <div class="col f-col">
+        <a class="u-link" href="#" data-placeholder data-i18n="f.privacy">Privacy policy</a>
+        <a class="u-link" href="#" data-placeholder data-i18n="f.terms">Terms</a>
+        <span class="f-concept" data-i18n="f.concept">Concept —<br>portfolio project</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL: BOOK A DEMO -->
+  <dialog class="modal" id="demo" aria-labelledby="demo-h">
+    <div class="modal-inner">
+      <div class="modal-top">
+        <p class="label" data-i18n="m.label">Book a demo</p>
+        <button class="m-close" type="button" data-close data-i18n="m.close">Close</button>
+      </div>
+      <div class="m-form">
+        <h2 class="m-h" id="demo-h" data-i18n="m.h">We’ll show you Korval in 30 minutes</h2>
+        <form novalidate>
+          <div class="field" data-field>
+            <label for="f-name" data-i18n="m.name">Full name</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required>
+            <p class="err" aria-live="polite"></p>
+          </div>
+          <div class="field" data-field>
+            <label for="f-email" data-i18n="m.email">Work email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required>
+            <p class="err" aria-live="polite"></p>
+          </div>
+          <div class="field" data-field>
+            <label for="f-company" data-i18n="m.company">Company</label>
+            <input id="f-company" name="company" type="text" autocomplete="organization" required>
+            <p class="err" aria-live="polite"></p>
+          </div>
+          <div class="field" data-field>
+            <label for="f-plan" data-i18n="m.plan">Plan</label>
+            <select id="f-plan" name="plan">
+              <option value="unsure" data-i18n="m.unsure">Not sure yet</option>
+              <option value="start" data-i18n="m.o1">Start — $0</option>
+              <option value="business" data-i18n="m.o2">Business — $129 / mo</option>
+              <option value="enterprise" data-i18n="m.o3">Enterprise — custom pricing</option>
+            </select>
+            <p class="err" aria-live="polite"></p>
+          </div>
+          <button class="submit" type="submit"><span data-i18n="m.submit">Send request</span><span aria-hidden="true">↘</span></button>
+          <p class="m-note" data-i18n="m.note">We reply within one business day.</p>
+        </form>
+      </div>
+      <div class="m-sent" aria-live="polite">
+        <h2 class="m-h" data-i18n="m.thanks">Thank you.</h2>
+        <p data-i18n="m.sent">Your request has arrived. We’ll get back to you within one business day.</p>
+        <button class="link" type="button" data-close><span data-i18n="m.back">Back to the site</span>  ↘</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- MODAL: VIDEO -->
+  <dialog class="modal modal--video" id="video" aria-labelledby="video-h">
+    <div class="modal-inner">
+      <div class="modal-top">
+        <p class="label" id="video-h" data-i18n="v.label">Demo video</p>
+        <button class="m-close" type="button" data-close data-i18n="m.close">Close</button>
+      </div>
+      <div class="v-screen">
+        <img src="hero.jpg" alt="" onerror="this.classList.add('is-missing')">
+      </div>
+      <div class="v-foot">
+        <p data-i18n="v.text">The full product video is in production. Meanwhile, we’ll walk you through Korval live.</p>
+        <button class="link" type="button" data-demo><span data-i18n="v.cta">Book a live demo</span>  ↘</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+/* Korval — Editorial: язык EN/PL, плавный скролл, модалки, форма, появление блоков */
+(() => {
+  const doc = document.documentElement;
+  doc.classList.add('js');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* =====================================================================
+     ПЕРЕВОДЫ. Английский берётся прямо из разметки, здесь только польский.
+     ===================================================================== */
+  const PL = {
+    'meta.title': 'Korval — Infrastruktura dla nowoczesnych pieniędzy',
+    'meta.desc': 'Przesyłaj, przechowuj i rozliczaj pieniądze z prędkością internetu — przez jedno API. Koncept, projekt portfolio.',
+    'skip': 'Przejdź do treści',
+    'tag': 'infrastruktura<br>finansowa',
+    'nav.products': 'produkty',
+    'nav.pricing': 'cennik',
+    'loc': 'warszawa, pl',
+    'hero.watch': 'Zobacz demo',
+    'about.label': 'O nas',
+    'about.text': 'W Korval wiemy, że pieniądze nie mogą czekać. Dlatego budujemy infrastrukturę finansową, na której firmy przesyłają, przechowują i rozliczają pieniądze — bez pośredników, bez opóźnień i bez granic. Jedno API zamiast dziesięciu banków.',
+    'prod.h': 'Produkty:',
+    'prod.list': 'Płatności<br>Konta wielowalutowe<br>Rozliczenia<br>REST API i SDK<br>Webhooki<br>Raporty na żywo<br>Karty firmowe',
+    'num.h': 'Liczby:',
+    'num.list': 'Rozliczenie 0,4 s<br>Waluty 140+<br>Wolumen 2,3 mld zł<br>Dostępność 99,99%<br>Licencja KNF',
+    'speed.label': 'Szybkość 0,4 s',
+    'speed.text': 'Średni czas rozliczenia transakcji w Korval to 0,4 sekundy. Integracja zajmuje trzy kroki: łączysz swój system przez API lub gotowe wtyczki, ustawiasz waluty, limity i reguły rozliczeń w panelu, a potem rośniesz bez zmiany infrastruktury — od pierwszej transakcji do miliona.',
+    'speed.big': '0,4',
+    'speed.unit': 'sek.',
+    'dev.label': 'Deweloperzy',
+    'dev.text': 'Stworzone przez programistów, dla programistów. REST API, SDK dla sześciu języków i dokumentacja, którą naprawdę da się przeczytać.',
+    'dev.link': 'Zobacz dokumentację',
+    'code.cur': 'PLN',
+    'price.label': 'Cennik',
+    'price.note': 'Ceny netto. Bez opłat za wdrożenie<br>i bez umowy na czas określony.',
+    'p1.price': '0 zł',
+    'p1.per': 'miesięcznie',
+    'p1.list': 'Do 50 000 zł obrotu<br>Prowizja 0,9%<br>1 konto wielowalutowe<br>Wsparcie e-mail',
+    'p1.cta': 'Zacznij za darmo',
+    'p2.name': 'Firma',
+    'p2.price': '490 zł',
+    'p2.per': 'miesięcznie',
+    'p2.list': 'Do 2 mln zł obrotu<br>Prowizja 0,4%<br>Do 10 kont<br>Pełne API i webhooki',
+    'p2.cta': 'Wybierz plan',
+    'p3.price': 'Wycena',
+    'p3.per': 'indywidualna',
+    'p3.list': 'Nielimitowany obrót<br>Prowizja indywidualna<br>Dedykowany opiekun<br>SLA 99,99%',
+    'p3.cta': 'Porozmawiaj z nami',
+    'sec.label': 'Bezpieczeństwo',
+    'sec.text': 'Bezpieczeństwo bez kompromisów. Działamy pod nadzorem finansowym i co roku przechodzimy niezależny audyt.',
+    'comp.h': 'Zgodność:',
+    'comp.list': 'Licencja KNF<br>PSD2<br>RODO<br>SOC 2 Type II',
+    'prot.h': 'Ochrona:',
+    'prot.list': 'Szyfrowanie end-to-end<br>AES-256<br>Audyt roczny<br>Monitoring 24/7',
+    'quote.label': 'Opinia',
+    'quote.text': '„Przenieśliśmy całe rozliczenia zagraniczne do Korval w dwa tygodnie. Dziś nie wyobrażamy sobie powrotu.”',
+    'contact.label': 'Kontakt',
+    'contact.text': 'Porozmawiaj z naszym zespołem i zobacz Korval w działaniu. Odpowiadamy w ciągu jednego dnia roboczego.',
+    'cta.word': 'umów demo',
+    'f.products': 'Produkty',
+    'f.pricing': 'Cennik',
+    'f.contact': 'Kontakt',
+    'f.privacy': 'Polityka prywatności',
+    'f.terms': 'Regulamin',
+    'f.concept': 'Koncept —<br>projekt portfolio',
+    'm.label': 'Umów demo',
+    'm.close': 'Zamknij',
+    'm.h': 'Pokażemy Korval w 30 minut',
+    'm.name': 'Imię i nazwisko',
+    'm.email': 'E-mail służbowy',
+    'm.company': 'Firma',
+    'm.plan': 'Plan',
+    'm.unsure': 'Nie wiem jeszcze',
+    'm.o1': 'Start — 0 zł',
+    'm.o2': 'Firma — 490 zł / mies.',
+    'm.o3': 'Enterprise — wycena indywidualna',
+    'm.submit': 'Wyślij zgłoszenie',
+    'm.note': 'Odpowiemy w ciągu jednego dnia roboczego.',
+    'm.thanks': 'Dziękujemy.',
+    'm.sent': 'Zgłoszenie dotarło. Odezwiemy się w ciągu jednego dnia roboczego.',
+    'm.back': 'Wróć na stronę',
+    'v.label': 'Wideo demo',
+    'v.text': 'Pełne wideo produktowe jest w przygotowaniu. W międzyczasie pokażemy Ci Korval na żywo.',
+    'v.cta': 'Umów demo na żywo',
+    'err.required': 'To pole jest wymagane',
+    'err.email': 'Podaj poprawny adres e-mail',
+  };
+  const EN_EXTRA = { 'err.required': 'This field is required', 'err.email': 'Enter a valid email address' };
+
+  // английский снимаем с разметки один раз
+  const EN = { ...EN_EXTRA };
+  document.querySelectorAll('[data-i18n]').forEach((el) => { EN[el.dataset.i18n] = el.innerHTML.trim(); });
+  document.querySelectorAll('[data-i18n-attr]').forEach((el) => {
+    const [attr, key] = el.dataset.i18nAttr.split(':');
+    EN[key] = el.getAttribute(attr);
+  });
+  const DICT = { en: EN, pl: PL };
+  let lang = 'en';
+  const t = (key) => (DICT[lang][key] ?? EN[key] ?? '');
+
+  function applyLang(next) {
+    lang = next;
+    doc.lang = next;
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      const value = DICT[next][el.dataset.i18n];
+      if (value !== undefined) el.innerHTML = value;
+    });
+    document.querySelectorAll('[data-i18n-attr]').forEach((el) => {
+      const [attr, key] = el.dataset.i18nAttr.split(':');
+      if (DICT[next][key] !== undefined) el.setAttribute(attr, DICT[next][key]);
+    });
+    document.querySelectorAll('[data-lang]').forEach((btn) =>
+      btn.setAttribute('aria-pressed', String(btn.dataset.lang === next))
+    );
+    // ошибки формы, если они уже показаны, тоже переводим
+    document.querySelectorAll('[data-field].has-error').forEach(validateField);
+  }
+
+  function setLang(next, { animate = true } = {}) {
+    if (next === lang || !DICT[next]) return;
+    try { localStorage.setItem('korval-lang', next); } catch (e) { /* приватный режим */ }
+    const url = new URL(location.href);
+    if (next === 'en') url.searchParams.delete('lang'); else url.searchParams.set('lang', next);
+    history.replaceState(null, '', url);
+
+    if (!animate || reduceMotion.matches) { applyLang(next); return; }
+    doc.classList.add('is-switching');
+    setTimeout(() => {
+      applyLang(next);
+      requestAnimationFrame(() => doc.classList.remove('is-switching'));
+    }, 180);
+  }
+
+  document.querySelectorAll('[data-lang]').forEach((btn) =>
+    btn.addEventListener('click', () => setLang(btn.dataset.lang))
+  );
+
+  // стартовый язык: ?lang=pl → сохранённый выбор → английский
+  (() => {
+    let initial = new URLSearchParams(location.search).get('lang');
+    if (!initial) { try { initial = localStorage.getItem('korval-lang'); } catch (e) { initial = null; } }
+    if (initial === 'pl') applyLang('pl');
+  })();
+
+  /* =====================================================================
+     Плавный скролл к якорям
+     ===================================================================== */
+  const easeInOutCubic = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+  let scrollRaf = null;
+
+  function scrollToY(targetY) {
+    const endY = Math.max(0, Math.min(targetY, doc.scrollHeight - innerHeight));
+    const startY = scrollY;
+    const dist = endY - startY;
+    cancelAnimationFrame(scrollRaf);
+    if (reduceMotion.matches || Math.abs(dist) < 2) { scrollTo(0, endY); return Promise.resolve(); }
+    const duration = Math.min(1400, Math.max(550, Math.abs(dist) * 0.35));
+    return new Promise((resolve) => {
+      let start = null;
+      const step = (now) => {
+        if (start === null) start = now;
+        const p = Math.min(1, (now - start) / duration);
+        scrollTo(0, startY + dist * easeInOutCubic(p));
+        if (p < 1) scrollRaf = requestAnimationFrame(step); else resolve();
+      };
+      scrollRaf = requestAnimationFrame(step);
+    });
+  }
+  ['wheel', 'touchstart'].forEach((type) =>
+    addEventListener(type, () => cancelAnimationFrame(scrollRaf), { passive: true })
+  );
+
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a || a.hasAttribute('data-demo')) return;
+    const hash = a.getAttribute('href');
+    if (hash === '#') { e.preventDefault(); return; } // заглушки
+    const target = hash === '#top' ? document.body : document.querySelector(hash);
+    if (!target) return;
+    e.preventDefault();
+    const y = hash === '#top' ? 0 : target.getBoundingClientRect().top + scrollY;
+    scrollToY(y).then(() => {
+      if (hash === '#top') return;
+      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+      target.focus({ preventScroll: true });
+    });
+    history.pushState(null, '', location.pathname + location.search + hash);
+  });
+
+  /* =====================================================================
+     Модальные окна
+     ===================================================================== */
+  const demo = document.getElementById('demo');
+  const video = document.getElementById('video');
+  const form = demo.querySelector('form');
+
+  function openModal(dlg) {
+    [demo, video].forEach((d) => { if (d !== dlg && d.open) closeModal(d, true); });
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+    requestAnimationFrame(() => requestAnimationFrame(() => dlg.classList.add('is-open')));
+    document.body.classList.add('no-scroll');
+  }
+  function closeModal(dlg, instant = false) {
+    dlg.classList.remove('is-open');
+    document.body.classList.remove('no-scroll');
+    const done = () => { if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open'); };
+    if (instant || reduceMotion.matches) done(); else setTimeout(done, 380);
+  }
+
+  document.addEventListener('click', (e) => {
+    const demoBtn = e.target.closest('[data-demo]');
+    if (demoBtn) {
+      e.preventDefault();
+      demo.classList.remove('is-sent');
+      if (demoBtn.dataset.plan) form.elements.plan.value = demoBtn.dataset.plan;
+      openModal(demo);
+      return;
+    }
+    if (e.target.closest('[data-video]')) { openModal(video); return; }
+    const closeBtn = e.target.closest('[data-close]');
+    if (closeBtn) closeModal(closeBtn.closest('dialog'));
+  });
+  [demo, video].forEach((dlg) => {
+    dlg.addEventListener('cancel', (e) => { e.preventDefault(); closeModal(dlg); });
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) closeModal(dlg); });
+  });
+
+  /* ---------- форма ---------- */
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  function validateField(field) {
+    const input = field.querySelector('input, select');
+    const err = field.querySelector('.err');
+    const v = input.value.trim();
+    let msg = '';
+    if (input.required && !v) msg = t('err.required');
+    else if (input.type === 'email' && v && !EMAIL_RE.test(v)) msg = t('err.email');
+    err.textContent = msg;
+    field.classList.toggle('has-error', Boolean(msg));
+    input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    return !msg;
+  }
+  form.querySelectorAll('[data-field]').forEach((field) => {
+    const input = field.querySelector('input, select');
+    input.addEventListener('blur', () => { if (input.value) validateField(field); });
+    input.addEventListener('input', () => { if (field.classList.contains('has-error')) validateField(field); });
+  });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let firstBad = null;
+    form.querySelectorAll('[data-field]').forEach((f) => {
+      if (!validateField(f) && !firstBad) firstBad = f.querySelector('input, select');
+    });
+    if (firstBad) { firstBad.focus(); return; }
+
+    const data = { ...Object.fromEntries(new FormData(form)), lang };
+    /* Реальная отправка, например Formspree:
+       fetch('https://formspree.io/f/ВАШ_ID', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+         body: JSON.stringify(data),
+       });
+    */
+    void data;
+    demo.classList.add('is-sent');
+    form.reset();
+    demo.querySelector('.m-sent [data-close]').focus();
+  });
+
+  /* =====================================================================
+     Появление блоков и лёгкий параллакс большой цифры
+     ===================================================================== */
+  const items = document.querySelectorAll('[data-reveal]');
+  if ('IntersectionObserver' in window && !reduceMotion.matches) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); } });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    items.forEach((el) => io.observe(el));
+  } else {
+    items.forEach((el) => el.classList.add('is-in'));
+  }
+
+  const big = document.querySelector('[data-parallax]');
+  const speed = document.getElementById('speed');
+  if (big && !reduceMotion.matches) {
+    let ticking = false;
+    const update = () => {
+      const r = speed.getBoundingClientRect();
+      const p = (innerHeight - r.top) / (innerHeight + r.height); // 0..1 пока секция в кадре
+      const shift = Math.max(0, Math.min(1, p)) - 0.5;
+      big.style.transform = `translateY(${shift * -10}%)`;
+      ticking = false;
+    };
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    update();
+  }
+})();
+
+  </script>
+</body>
+</html>
